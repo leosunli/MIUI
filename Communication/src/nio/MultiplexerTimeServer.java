@@ -25,6 +25,7 @@ public class MultiplexerTimeServer implements Runnable {
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(false);
             serverSocketChannel.socket().bind(new InetSocketAddress(port), 1024);
+            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             System.out.println("The time server is start in port : " + port);
         } catch (IOException e) {
             e.printStackTrace();

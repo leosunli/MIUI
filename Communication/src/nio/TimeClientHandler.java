@@ -56,7 +56,7 @@ public class TimeClientHandler implements Runnable {
                     key = iterator.next();
                     iterator.remove();
                     try {
-                        handlerInput(key);
+                        handleInput(key);
                     } catch (IOException e) {
                         if (key != null) {
                             key.cancel();
@@ -81,7 +81,7 @@ public class TimeClientHandler implements Runnable {
         }
     }
 
-    private void handlerInput(SelectionKey key) throws IOException {
+    private void handleInput(SelectionKey key) throws IOException {
         if (key.isValid()) {
             //判断是否连接成功
             SocketChannel sc = (SocketChannel)key.channel();
