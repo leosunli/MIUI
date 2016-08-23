@@ -23,7 +23,7 @@ public class MultiplexerTimeServer implements Runnable {
         try {
             selector = Selector.open();
             serverSocketChannel = ServerSocketChannel.open();
-            serverSocketChannel.configureBlocking(false);
+            serverSocketChannel.configureBlocking(false);   //设置异步非阻塞模式
             serverSocketChannel.socket().bind(new InetSocketAddress(port), 1024);
             serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
             System.out.println("The time server is start in port : " + port);
@@ -84,7 +84,7 @@ public class MultiplexerTimeServer implements Runnable {
             if (key.isAcceptable()) {
                 //Accept the new connection
                 ServerSocketChannel ssc = (ServerSocketChannel)key.channel();
-                SocketChannel sc = ssc.accept();
+                SocketChannel sc = ssc.accept(); //accept()方法会一直阻塞到有新连接到达。
                 sc.configureBlocking(false);
                 //Add the new connection to the selector
                 sc.register(selector, SelectionKey.OP_READ);
@@ -97,7 +97,7 @@ public class MultiplexerTimeServer implements Runnable {
                 int readBytes = sc.read(readBuffer);
                 if (readBytes > 0) {
                     readBuffer.flip();
-                    byte[] bytes = new byte[readBuffer.remaining()];
+                    byte[] bytes = new byte[readBuffer.remaining()]; //remaining = limit - position
                     readBuffer.get(bytes);
                     String body = new String(bytes, "UTF-8");
                     System.out.println("The time server receive order :" + body);
@@ -116,7 +116,7 @@ public class MultiplexerTimeServer implements Runnable {
             ByteBuffer writeBuffer = ByteBuffer.allocate(bytes.length);
             writeBuffer.put(bytes);
             writeBuffer.flip();
-            socketChannel.write(writeBuffer);
+            socketChannel.write(writeBuffer);   //由于SocketChannel是异步非阻塞的,它并不保证一次能够把需要发送的字节数组发送完,此时会出现"写半包问题"
         }
     }
 }
