@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 /**
- * Created by mi on 16-8-24.
+ * Created by leo on 16-8-24.
  */
 public class EchoClientHandler extends ChannelInboundHandlerAdapter {
 
