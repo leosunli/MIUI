@@ -11,6 +11,8 @@ import java.util.Date;
  */
 public class TimeServerHandler extends ChannelInboundHandlerAdapter {
 
+    private int counter;
+
     public TimeServerHandler() {
         super();
     }
@@ -37,20 +39,24 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = (ByteBuf)msg;
-        byte[] req = new byte[buf.readableBytes()];
-        buf.readBytes(req);
-        String body = new String(req, "UTF-8");
-        System.out.println("The time server receive order : " + body);
+//        ByteBuf buf = (ByteBuf)msg;
+//        byte[] req = new byte[buf.readableBytes()];
+//        buf.readBytes(req);
+//        String body = new String(req, "UTF-8").substring(0, req.length
+//                - System.getProperty("line.separator").length());
+        String body = (String)msg;
+        System.out.println("The time server receive order : " + body
+                + "; this counter is : " + ++counter);
         String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ?
                 new Date(System.currentTimeMillis()).toString() : "BAD ORDER";
+        currentTime = currentTime + System.getProperty("line.separator");
         ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
-        ctx.write(resp);
+        ctx.writeAndFlush(resp);
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        // 将消息发送队列中的消息写入到SocketChannel中发送给对方
+        // flush将消息发送队列中的消息写入到SocketChannel中发送给对方
         // Netty的write方法并不直接将消息写入到SocketChannel中,
         // 调用write方法只是把待发送的消息放到发送缓冲数组中
         //从性能角度考虑,为了防止频繁地唤醒Selector进行消息发送
