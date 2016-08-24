@@ -41,7 +41,6 @@ public class TimeClient {
             // 优雅退出,释放NIO线程组
             group.shutdownGracefully();
         }
-
     }
 
     public static void main(String[] args) throws Exception {
