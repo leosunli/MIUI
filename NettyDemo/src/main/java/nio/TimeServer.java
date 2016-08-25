@@ -29,7 +29,7 @@ public class TimeServer {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_BACKLOG, 1024)
+                    .option(ChannelOption.SO_BACKLOG, 1024) // 指定了内核为此套接口排队的最大连接数
 
                     // 作用类似于Reactor模式中的Handler类,主要处理网络I/O事件,
                     // 例如记录日志,对消息进行编解码
