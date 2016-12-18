@@ -1,6 +1,6 @@
-package observer.builtin;
+package main.observer.builtin;
 
-import observer.DisplayElement;
+import main.observer.DisplayElement;
 
 import java.util.Observable;
 import java.util.Observer;
