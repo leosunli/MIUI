@@ -39,6 +39,7 @@ public class HeartBeatClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println("channel read " + msg);
         String message = (String) msg;
         System.out.println(message);
         if (message.equals("Heartbeat")) {

@@ -1,14 +1,17 @@
 package heartbeat;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by leo on 17-2-4.
@@ -26,11 +29,30 @@ public class HeartBeatsClient {
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .handler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-
+                            ChannelPipeline pipeline = socketChannel.pipeline();
+                            pipeline.addLast("ping", new IdleStateHandler(0, 4, 0, TimeUnit.SECONDS));
+                            pipeline.addLast("decode", new StringDecoder());
+                            pipeline.addLast("encode", new StringEncoder());
+                            pipeline.addLast(new HeartBeatClientHandler());
                         }
                     });
+
+            ChannelFuture future = bootstrap.connect(host, port).sync();
+            future.channel().closeFuture().sync();
         } finally {
             group.shutdownGracefully();
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        int port = 8000;
+        if (args != null && args.length > 0) {
+            try {
+                port = Integer.parseInt(args[0]);
+            } catch (Exception e) {
+
+            }
+        }
+        new HeartBeatsClient().connect(port, "127.0.0.1");
     }
 }

@@ -5,6 +5,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 
+import java.util.Date;
+
 /**
  * Created by leo on 17-2-4.
  */
@@ -20,7 +22,7 @@ public class HeartBeatServerHandler extends ChannelInboundHandlerAdapter {
                 lossConnectTime++;
                 System.out.println("5秒没有收到客户端的信息了");
                 if (lossConnectTime > 2) {
-                    System.out.println("关闭这个不活跃的channel");
+                    System.out.println("关闭这个不活跃的channel" + new Date());
                     ctx.channel().close();
                 }
             }
@@ -37,7 +39,8 @@ public class HeartBeatServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-       cause.printStackTrace();
+        System.out.println("exception caught");
+        cause.printStackTrace();
         ctx.close();
     }
 }
