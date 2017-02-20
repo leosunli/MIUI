@@ -37,7 +37,12 @@ public class HelloWorldServer {
                             socketChannel.pipeline().addLast(new HelloWorldServerHandler());
                         }
                     })
+                    //ChannelOption.SO_BACKLOG BACKLOG用于构造服务端套接字ServerSocket对象，标识当服务器
+                    //请求处理线程全满时，用于临时存放已完成的请求的队列的最大长度。如果未设置或所设置值小于1，默认
+                    //值是50
             .option(ChannelOption.SO_BACKLOG, 128)
+                    //ChannelOption.SO_KEEPALIVE 是否启动心跳保活机制。在双方TCP套接字建立连接后（即进入ESTABLISHED状态）
+                    //并且在两个小时左右上层没有任何数据传输的情况下，这套机制才会被激活。
             .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             ChannelFuture future = serverBootstrap.bind(port).sync();
